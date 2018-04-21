@@ -9,17 +9,10 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
  */
 public class Body implements StateHolder<Body.BodyState> {
 
-    //TODO: move public static final G = 6,693 * Math.pow(10, −11); // In m3 / kg*s2.
-
-    /**
-     * Type of Body (i.e. Earth)
-     */
-    private final BodyType type;
-
     /**
      * The body's mass (in kilograms).
      */
-    private double mass;
+    private final double mass;
 
     /**
      * The body's position (represented as a 2D vector).
@@ -51,35 +44,33 @@ public class Body implements StateHolder<Body.BodyState> {
     /**
      * Constructor.
      *
-     * @param mass      The body's mass (in kilograms).
-     * @param position The body's position.
-     * @param velocity The body's velocity.
-     * @param acceleration The body's acceleration.
-     * @param type The type of body.
+     * @param mass                The body's mass (in kilograms).
+     * @param initialPosition     The body's initial position.
+     * @param initialVelocity     The body's initial velocity.
+     * @param initialAcceleration The body's initial acceleration.
      */
-    public Body(final double mass, final Vector2D position, final Vector2D velocity, final Vector2D acceleration,
-            final BodyType type) {
+    public Body(final double mass, final Vector2D initialPosition,
+                final Vector2D initialVelocity, final Vector2D initialAcceleration) {
         this.mass = mass;
-        this.position = new Vector2D(position.getX(), position.getY());
-        this.velocity = new Vector2D(velocity.getX(), velocity.getY());
-        previousAcceleration = acceleration;
-        previousPosition = null;
-        this.type = type;
+        this.position = initialPosition;
+        this.velocity = initialVelocity;
+        this.acceleration = initialAcceleration;
+        this.previousAcceleration = null;
+        this.previousPosition = null;
     }
 
     /**
-     * Calculates the gravitational force between two {@link Body}s.
+     * Calculates the gravitational force
+     * that the given {@code other} {@link Body} applies to {@code this} {@link Body}.
      *
-     * @param other The other body.
-     * @param g The gravitational constant.
-     * @return The gravitational force.
+     * @param other The {@link Body} applying a gravitational force over {@code this} {@link Body}.
+     * @return The force.
      */
-    public double gravitationalForce(final Body other, final double g) {
-        //TODO: is it better to return a double or a Vector2D? we can use the module of the force to calculate
-        // the Force applied in both bodies.
-
+    public Vector2D appliedGravitationalForce(final Body other) {
         //TODO: also this could be in System as a force provider
-        return g * mass * other.getMass() / (Math.pow(position.subtract(other.getPosition()).getNorm(),2));
+        final Vector2D difference = other.getPosition().subtract(this.position);
+        final double factor = -(Constants.G * this.mass * other.getMass()) / Math.pow(difference.getNorm(), 3);
+        return difference.scalarMultiply(factor);
     }
 
     /**
@@ -111,13 +102,6 @@ public class Body implements StateHolder<Body.BodyState> {
     }
 
     /**
-     * @return The body's type (i.e. Ship).
-     */
-    public BodyType getType() {
-        return type;
-    }
-
-    /**
      * @return The body's kinetic energy.
      */
     public double getKineticEnergy() {
@@ -128,11 +112,10 @@ public class Body implements StateHolder<Body.BodyState> {
      * Calculates the potential energy of a two {@link Body}'s system.
      *
      * @param other The other body.
-     * @param g The gravitational constant.
      * @return The potential energy of the system.
      */
-    public double getPotentialEnergy(final Body other, final double g) {
-        return - g * mass * other.getMass() / position.subtract(other.getPosition()).getNorm();
+    public double getPotentialEnergy(final Body other) {
+        return -Constants.G * mass * other.getMass() / position.subtract(other.getPosition()).getNorm();
     }
 
     @Override
@@ -141,7 +124,7 @@ public class Body implements StateHolder<Body.BodyState> {
     }
 
     /**
-     * Represents the state of a given body.o
+     * Represents the state of a given body.
      */
     public static final class BodyState implements State {
 
@@ -166,11 +149,6 @@ public class Body implements StateHolder<Body.BodyState> {
         private final Vector2D acceleration;
 
         /**
-         * The type of body (i.e. Sun).
-         */
-        private final BodyType type;
-
-        /**
          * Constructor.
          *
          * @param body The {@link Body}'s whose state will be represented.
@@ -180,7 +158,6 @@ public class Body implements StateHolder<Body.BodyState> {
             position = body.getPosition(); // The Vector2D class is unmodifiable.
             velocity = body.getVelocity(); // The Vector2D class is unmodifiable.
             acceleration = body.getAcceleration(); // The Vector2D class is unmodifiable.
-            type = body.getType();
         }
 
         /**
@@ -209,13 +186,6 @@ public class Body implements StateHolder<Body.BodyState> {
          */
         public Vector2D getAcceleration() {
             return acceleration;
-        }
-
-        /**
-         * The {@link Body}'s type.
-         */
-        public BodyType getType() {
-            return type;
         }
     }
 }
