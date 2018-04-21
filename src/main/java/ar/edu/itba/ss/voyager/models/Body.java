@@ -9,8 +9,6 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
  */
 public class Body implements StateHolder<Body.BodyState> {
 
-    //TODO: move public static final G = 6,693 * Math.pow(10, −11); // In m3 / kg*s2.
-
     /**
      * Type of Body (i.e. Earth)
      */
@@ -51,14 +49,14 @@ public class Body implements StateHolder<Body.BodyState> {
     /**
      * Constructor.
      *
-     * @param mass      The body's mass (in kilograms).
-     * @param position The body's position.
-     * @param velocity The body's velocity.
+     * @param mass         The body's mass (in kilograms).
+     * @param position     The body's position.
+     * @param velocity     The body's velocity.
      * @param acceleration The body's acceleration.
-     * @param type The type of body.
+     * @param type         The type of body.
      */
     public Body(final double mass, final Vector2D position, final Vector2D velocity, final Vector2D acceleration,
-            final BodyType type) {
+                final BodyType type) {
         this.mass = mass;
         this.position = new Vector2D(position.getX(), position.getY());
         this.velocity = new Vector2D(velocity.getX(), velocity.getY());
@@ -71,15 +69,14 @@ public class Body implements StateHolder<Body.BodyState> {
      * Calculates the gravitational force between two {@link Body}s.
      *
      * @param other The other body.
-     * @param g The gravitational constant.
      * @return The gravitational force.
      */
-    public double gravitationalForce(final Body other, final double g) {
+    public double gravitationalForce(final Body other) {
         //TODO: is it better to return a double or a Vector2D? we can use the module of the force to calculate
         // the Force applied in both bodies.
 
         //TODO: also this could be in System as a force provider
-        return g * mass * other.getMass() / (Math.pow(position.subtract(other.getPosition()).getNorm(),2));
+        return Constants.G * mass * other.getMass() / (Math.pow(position.subtract(other.getPosition()).getNorm(), 2));
     }
 
     /**
@@ -128,11 +125,10 @@ public class Body implements StateHolder<Body.BodyState> {
      * Calculates the potential energy of a two {@link Body}'s system.
      *
      * @param other The other body.
-     * @param g The gravitational constant.
      * @return The potential energy of the system.
      */
-    public double getPotentialEnergy(final Body other, final double g) {
-        return - g * mass * other.getMass() / position.subtract(other.getPosition()).getNorm();
+    public double getPotentialEnergy(final Body other) {
+        return -Constants.G * mass * other.getMass() / position.subtract(other.getPosition()).getNorm();
     }
 
     @Override
