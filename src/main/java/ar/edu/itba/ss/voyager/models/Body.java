@@ -10,11 +10,6 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 public class Body implements StateHolder<Body.BodyState> {
 
     /**
-     * Type of Body (i.e. Earth)
-     */
-    private final BodyType type;
-
-    /**
      * The body's mass (in kilograms).
      */
     private double mass;
@@ -53,16 +48,13 @@ public class Body implements StateHolder<Body.BodyState> {
      * @param position     The body's position.
      * @param velocity     The body's velocity.
      * @param acceleration The body's acceleration.
-     * @param type         The type of body.
      */
-    public Body(final double mass, final Vector2D position, final Vector2D velocity, final Vector2D acceleration,
-                final BodyType type) {
+    public Body(final double mass, final Vector2D position, final Vector2D velocity, final Vector2D acceleration) {
         this.mass = mass;
         this.position = new Vector2D(position.getX(), position.getY());
         this.velocity = new Vector2D(velocity.getX(), velocity.getY());
         previousAcceleration = acceleration;
         previousPosition = null;
-        this.type = type;
     }
 
     /**
@@ -108,13 +100,6 @@ public class Body implements StateHolder<Body.BodyState> {
     }
 
     /**
-     * @return The body's type (i.e. Ship).
-     */
-    public BodyType getType() {
-        return type;
-    }
-
-    /**
      * @return The body's kinetic energy.
      */
     public double getKineticEnergy() {
@@ -137,7 +122,7 @@ public class Body implements StateHolder<Body.BodyState> {
     }
 
     /**
-     * Represents the state of a given body.o
+     * Represents the state of a given body.
      */
     public static final class BodyState implements State {
 
@@ -162,11 +147,6 @@ public class Body implements StateHolder<Body.BodyState> {
         private final Vector2D acceleration;
 
         /**
-         * The type of body (i.e. Sun).
-         */
-        private final BodyType type;
-
-        /**
          * Constructor.
          *
          * @param body The {@link Body}'s whose state will be represented.
@@ -176,7 +156,6 @@ public class Body implements StateHolder<Body.BodyState> {
             position = body.getPosition(); // The Vector2D class is unmodifiable.
             velocity = body.getVelocity(); // The Vector2D class is unmodifiable.
             acceleration = body.getAcceleration(); // The Vector2D class is unmodifiable.
-            type = body.getType();
         }
 
         /**
@@ -205,13 +184,6 @@ public class Body implements StateHolder<Body.BodyState> {
          */
         public Vector2D getAcceleration() {
             return acceleration;
-        }
-
-        /**
-         * The {@link Body}'s type.
-         */
-        public BodyType getType() {
-            return type;
         }
     }
 }
