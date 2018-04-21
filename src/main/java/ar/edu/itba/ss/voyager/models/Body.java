@@ -44,17 +44,19 @@ public class Body implements StateHolder<Body.BodyState> {
     /**
      * Constructor.
      *
-     * @param mass         The body's mass (in kilograms).
-     * @param position     The body's position.
-     * @param velocity     The body's velocity.
-     * @param acceleration The body's acceleration.
+     * @param mass                The body's mass (in kilograms).
+     * @param initialPosition     The body's initial position.
+     * @param initialVelocity     The body's initial velocity.
+     * @param initialAcceleration The body's initial acceleration.
      */
-    public Body(final double mass, final Vector2D position, final Vector2D velocity, final Vector2D acceleration) {
+    public Body(final double mass, final Vector2D initialPosition,
+                final Vector2D initialVelocity, final Vector2D initialAcceleration) {
         this.mass = mass;
-        this.position = new Vector2D(position.getX(), position.getY());
-        this.velocity = new Vector2D(velocity.getX(), velocity.getY());
-        previousAcceleration = acceleration;
-        previousPosition = null;
+        this.position = initialPosition;
+        this.velocity = initialVelocity;
+        this.acceleration = initialAcceleration;
+        this.previousAcceleration = null;
+        this.previousPosition = null;
     }
 
     /**
