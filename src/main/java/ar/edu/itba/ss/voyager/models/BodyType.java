@@ -11,7 +11,9 @@ public enum BodyType {
      */
     SUN {
         @Override
-        Body provide(Vector2D initialPosition, Vector2D initialVelocity, Vector2D initialAcceleration) {
+        Body provide(final Vector2D initialPosition,
+                     final Vector2D initialVelocity,
+                     final Vector2D initialAcceleration) {
             return new Body(Constants.SUN_MASS, initialPosition, initialVelocity, initialAcceleration);
         }
     },
@@ -20,7 +22,9 @@ public enum BodyType {
      */
     EARTH {
         @Override
-        Body provide(Vector2D initialPosition, Vector2D initialVelocity, Vector2D initialAcceleration) {
+        Body provide(final Vector2D initialPosition,
+                     final Vector2D initialVelocity,
+                     final Vector2D initialAcceleration) {
             return new Body(Constants.EARTH_MASS, initialPosition, initialVelocity, initialAcceleration);
         }
     },
@@ -29,7 +33,9 @@ public enum BodyType {
      */
     JUPITER {
         @Override
-        Body provide(Vector2D initialPosition, Vector2D initialVelocity, Vector2D initialAcceleration) {
+        Body provide(final Vector2D initialPosition,
+                     final Vector2D initialVelocity,
+                     final Vector2D initialAcceleration) {
             return new Body(Constants.JUPITER_MASS, initialPosition, initialVelocity, initialAcceleration);
         }
     },
@@ -38,7 +44,9 @@ public enum BodyType {
      */
     SATURN {
         @Override
-        Body provide(Vector2D initialPosition, Vector2D initialVelocity, Vector2D initialAcceleration) {
+        Body provide(final Vector2D initialPosition,
+                     final Vector2D initialVelocity,
+                     final Vector2D initialAcceleration) {
             return new Body(Constants.SATURN_MASS, initialPosition, initialVelocity, initialAcceleration);
         }
     },
@@ -47,7 +55,9 @@ public enum BodyType {
      */
     SHIP {
         @Override
-        Body provide(Vector2D initialPosition, Vector2D initialVelocity, Vector2D initialAcceleration) {
+        Body provide(final Vector2D initialPosition,
+                     final Vector2D initialVelocity,
+                     final Vector2D initialAcceleration) {
             return new Body(Constants.SHIP_MASS, initialPosition, initialVelocity, initialAcceleration);
         }
     };
@@ -61,5 +71,7 @@ public enum BodyType {
      * @return The built {@link Body}.
      */
     /* package */
-    abstract Body provide(Vector2D initialPosition, Vector2D initialVelocity, Vector2D initialAcceleration);
+    abstract Body provide(final Vector2D initialPosition,
+                          final Vector2D initialVelocity,
+                          final Vector2D initialAcceleration);
 }
