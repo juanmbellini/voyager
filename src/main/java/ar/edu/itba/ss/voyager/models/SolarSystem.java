@@ -483,15 +483,14 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
                                             double affectedMass,
                                             double influencer1Mass, double influencer2Mass,
                                             double influencer3Mass, double influencer4Mass) {
-        // Calculate acceleration for the Sun
-        final Vector2D earthOverSunForce = Functions
-                .gravitationalForce(affectedMass, influencer1Mass).apply(affectedPosition, influencer1Position);
-        final Vector2D jupiterOverSunForce = Functions
-                .gravitationalForce(affectedMass, influencer2Mass).apply(affectedPosition, influencer2Position);
-        final Vector2D saturnOverSunForce = Functions
-                .gravitationalForce(affectedMass, influencer3Mass).apply(affectedPosition, influencer3Position);
-        final Vector2D shipOverSunForce = Functions
-                .gravitationalForce(affectedMass, influencer4Mass).apply(affectedPosition, influencer4Position);
+        final Vector2D earthOverSunForce = Utils
+                .gravitationalForce(affectedMass, influencer1Mass, affectedPosition, influencer1Position);
+        final Vector2D jupiterOverSunForce = Utils
+                .gravitationalForce(affectedMass, influencer2Mass, affectedPosition, influencer2Position);
+        final Vector2D saturnOverSunForce = Utils
+                .gravitationalForce(affectedMass, influencer3Mass, affectedPosition, influencer3Position);
+        final Vector2D shipOverSunForce = Utils
+                .gravitationalForce(affectedMass, influencer4Mass, affectedPosition, influencer4Position);
         return Stream.of(earthOverSunForce, jupiterOverSunForce, saturnOverSunForce, shipOverSunForce)
                 .reduce(Vector2D.ZERO, Vector2D::add).scalarMultiply(1 / affectedMass);
     }

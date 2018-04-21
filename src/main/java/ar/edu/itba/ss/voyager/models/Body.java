@@ -67,7 +67,7 @@ public class Body implements StateHolder<Body.BodyState> {
      * @return The force.
      */
     public Vector2D appliedGravitationalForce(final Body other) {
-        return Functions.gravitationalForce(this.mass, other.mass).apply(this.position, other.position);
+        return Utils.gravitationalForce(this.mass, other.mass, this.position, other.position);
     }
 
     /**
