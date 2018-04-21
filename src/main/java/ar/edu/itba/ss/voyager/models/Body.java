@@ -29,18 +29,6 @@ public class Body implements StateHolder<Body.BodyState> {
      */
     private Vector2D acceleration;
 
-    //TODO: both previous variables may be removed according to the update strategy that we decide to use
-
-    /**
-     * The body's previous acceleration (represented as a 2D vector)
-     */
-    private Vector2D previousAcceleration;
-
-    /**
-     * The body's previous position (represented as a 2D vector)
-     */
-    private Vector2D previousPosition;
-
     /**
      * Constructor.
      *
@@ -55,8 +43,6 @@ public class Body implements StateHolder<Body.BodyState> {
         this.position = initialPosition;
         this.velocity = initialVelocity;
         this.acceleration = initialAcceleration;
-        this.previousAcceleration = null;
-        this.previousPosition = null;
     }
 
     /**
