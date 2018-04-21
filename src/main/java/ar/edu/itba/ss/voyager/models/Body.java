@@ -12,7 +12,7 @@ public class Body implements StateHolder<Body.BodyState> {
     /**
      * The body's mass (in kilograms).
      */
-    private double mass;
+    private final double mass;
 
     /**
      * The body's position (represented as a 2D vector).
@@ -58,17 +58,17 @@ public class Body implements StateHolder<Body.BodyState> {
     }
 
     /**
-     * Calculates the gravitational force between two {@link Body}s.
+     * Calculates the gravitational force
+     * that the given {@code other} {@link Body} applies to {@code this} {@link Body}.
      *
-     * @param other The other body.
-     * @return The gravitational force.
+     * @param other The {@link Body} applying a gravitational force over {@code this} {@link Body}.
+     * @return The force.
      */
-    public double gravitationalForce(final Body other) {
-        //TODO: is it better to return a double or a Vector2D? we can use the module of the force to calculate
-        // the Force applied in both bodies.
-
+    public Vector2D appliedGravitationalForce(final Body other) {
         //TODO: also this could be in System as a force provider
-        return Constants.G * mass * other.getMass() / (Math.pow(position.subtract(other.getPosition()).getNorm(), 2));
+        final Vector2D difference = other.getPosition().subtract(this.position);
+        final double factor = -(Constants.G * this.mass * other.getMass()) / Math.pow(difference.getNorm(), 3);
+        return difference.scalarMultiply(factor);
     }
 
     /**
