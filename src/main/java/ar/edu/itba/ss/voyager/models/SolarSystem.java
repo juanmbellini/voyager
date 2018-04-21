@@ -15,6 +15,10 @@ import java.util.stream.Stream;
  */
 public class SolarSystem implements System<SolarSystem.SolarSystemState> {
 
+    // ================================================================================================================
+    // System stuff
+    // ================================================================================================================
+
     /**
      * The Sun.
      */
@@ -40,10 +44,91 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      */
     private final Body ship;
 
+    // ================================================================================================================
+    // Updating stuff
+    // ================================================================================================================
+
+    /**
+     * The time step (i.e how much time elapses between two update events).
+     */
+    private final double timeStep;
+
+    /**
+     * The amount of time the system has been oscillating.
+     */
+    private double actualTime;
+
     /**
      * {@link Map} holding, for each, body, the {@link List} of {@link Body} that gravitationally influence them.
      */
     private final Map<Body, List<Body>> influencers;
+
+    private final Map<Body, Vector2D> previousAccelerations;
+
+    // ================================================================================================================
+    // Restarting stuff
+    // ================================================================================================================
+
+    /**
+     * The initial position of the Sun (i.e for restarting stuff).
+     */
+    private final Vector2D sunInitialPosition;
+    /**
+     * The initial velocity of the Sun (i.e for restarting stuff).
+     */
+    private final Vector2D sunInitialVelocity;
+    /**
+     * The initial acceleration of the Sun (i.e for restarting stuff).
+     */
+    private final Vector2D sunInitialAcceleration;
+    /**
+     * The initial position of the Earth (i.e for restarting stuff).
+     */
+    private final Vector2D earthInitialPosition;
+    /**
+     * The initial velocity of the Earth (i.e for restarting stuff).
+     */
+    private final Vector2D earthInitialVelocity;
+    /**
+     * The initial acceleration of the Earth (i.e for restarting stuff).
+     */
+    private final Vector2D earthInitialAcceleration;
+    /**
+     * The initial position of Jupiter (i.e for restarting stuff).
+     */
+    private final Vector2D jupiterInitialPosition;
+    /**
+     * The initial velocity of Jupiter (i.e for restarting stuff).
+     */
+    private final Vector2D jupiterInitialVelocity;
+    /**
+     * The initial acceleration of Jupiter (i.e for restarting stuff).
+     */
+    private final Vector2D jupiterInitialAcceleration;
+    /**
+     * The initial position of Saturn (i.e for restarting stuff).
+     */
+    private final Vector2D saturnInitialPosition;
+    /**
+     * The initial velocity of Saturn (i.e for restarting stuff).
+     */
+    private final Vector2D saturnInitialVelocity;
+    /**
+     * The initial acceleration of Saturn (i.e for restarting stuff).
+     */
+    private final Vector2D saturnInitialAcceleration;
+    /**
+     * The initial position of the ship (i.e for restarting stuff).
+     */
+    private final Vector2D shipInitialPosition;
+    /**
+     * The initial velocity of the ship (i.e for restarting stuff).
+     */
+    private final Vector2D shipInitialVelocity;
+    /**
+     * The initial acceleration of the ship (i.e for restarting stuff).
+     */
+    private final Vector2D shipInitialAcceleration;
 
     /**
      * Constructor.
@@ -63,6 +148,7 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      * @param shipInitialPosition        The ship's initial position.
      * @param shipInitialVelocity        The ship's initial velocity.
      * @param shipInitialAcceleration    The ship's initial acceleration.
+     * @param timeStep                   The time step (i.e how much time elapses between two update events).
      */
     public SolarSystem(final Vector2D sunInitialPosition, final Vector2D sunInitialVelocity,
                        final Vector2D sunInitialAcceleration,
@@ -73,7 +159,24 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
                        final Vector2D saturnInitialPosition, final Vector2D saturnInitialVelocity,
                        final Vector2D saturnInitialAcceleration,
                        final Vector2D shipInitialPosition, final Vector2D shipInitialVelocity,
-                       final Vector2D shipInitialAcceleration) {
+                       final Vector2D shipInitialAcceleration,
+                       double timeStep) {
+        this.sunInitialPosition = sunInitialPosition;
+        this.sunInitialVelocity = sunInitialVelocity;
+        this.sunInitialAcceleration = sunInitialAcceleration;
+        this.earthInitialPosition = earthInitialPosition;
+        this.earthInitialVelocity = earthInitialVelocity;
+        this.earthInitialAcceleration = earthInitialAcceleration;
+        this.jupiterInitialPosition = jupiterInitialPosition;
+        this.jupiterInitialVelocity = jupiterInitialVelocity;
+        this.jupiterInitialAcceleration = jupiterInitialAcceleration;
+        this.saturnInitialPosition = saturnInitialPosition;
+        this.saturnInitialVelocity = saturnInitialVelocity;
+        this.saturnInitialAcceleration = saturnInitialAcceleration;
+        this.shipInitialPosition = shipInitialPosition;
+        this.shipInitialVelocity = shipInitialVelocity;
+        this.shipInitialAcceleration = shipInitialAcceleration;
+
         this.sun = BodyType.SUN.provide(sunInitialPosition, sunInitialVelocity, sunInitialAcceleration);
         this.earth = BodyType.EARTH.provide(earthInitialPosition, earthInitialVelocity, earthInitialAcceleration);
         this.jupiter = BodyType.JUPITER.provide(jupiterInitialPosition, jupiterInitialVelocity, jupiterInitialAcceleration);
@@ -85,7 +188,99 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
         this.influencers.put(jupiter, Stream.of(sun, earth, saturn, ship).collect(Collectors.toList()));
         this.influencers.put(saturn, Stream.of(sun, earth, jupiter, ship).collect(Collectors.toList()));
         this.influencers.put(ship, Stream.of(sun, earth, jupiter, saturn).collect(Collectors.toList()));
+        this.timeStep = timeStep;
+        this.previousAccelerations = new HashMap<>();
+        initializePreviousAccelerations();
     }
+
+    /**
+     * Initializes the previous accelerations {@link Map} (i.e to have the previous accelerations in the first step).
+     */
+    private void initializePreviousAccelerations() {
+        if (this.previousAccelerations == null) {
+            throw new IllegalStateException("This method should be called" +
+                    " once the previous accelerations map is initialized");
+        }
+
+        // Initialize The Sun's velocity and position at -deltaT
+        final Vector2D sunActualPosition = sun.getPosition();
+        final double sunMass = sun.getMass();
+        final Vector2D sunForce = getAppliedForce(sun);
+        final Vector2D sunPreviousVelocity = sun.getVelocity()
+                .subtract(sunForce.scalarMultiply(timeStep / sunMass));
+        final Vector2D sunPreviousPosition = sunActualPosition
+                .subtract(sunPreviousVelocity.scalarMultiply(timeStep))
+                .add(sunForce.scalarMultiply((timeStep * timeStep) / (2 * sunMass)));
+
+        // Initialize The Earth's velocity and position at -deltaT
+        final Vector2D earthActualPosition = earth.getPosition();
+        final double earthMass = earth.getMass();
+        final Vector2D earthForce = getAppliedForce(earth);
+        final Vector2D earthPreviousVelocity = earth.getVelocity()
+                .subtract(earthForce.scalarMultiply(timeStep / earthMass));
+        final Vector2D earthPreviousPosition = earthActualPosition
+                .subtract(earthPreviousVelocity.scalarMultiply(timeStep))
+                .add(earthForce.scalarMultiply((timeStep * timeStep) / (2 * earthMass)));
+
+        // Initialize Jupiter's velocity and position at -deltaT
+        final Vector2D jupiterActualPosition = jupiter.getPosition();
+        final double jupiterMass = jupiter.getMass();
+        final Vector2D jupiterForce = getAppliedForce(jupiter);
+        final Vector2D jupiterPreviousVelocity = jupiter.getVelocity()
+                .subtract(jupiterForce.scalarMultiply(timeStep / jupiterMass));
+        final Vector2D jupiterPreviousPosition = jupiterActualPosition
+                .subtract(jupiterPreviousVelocity.scalarMultiply(timeStep))
+                .add(jupiterForce.scalarMultiply((timeStep * timeStep) / (2 * jupiterMass)));
+
+        // Initialize Saturn's velocity and position at -deltaT
+        final Vector2D saturnActualPosition = saturn.getPosition();
+        final double saturnMass = saturn.getMass();
+        final Vector2D saturnForce = getAppliedForce(saturn);
+        final Vector2D saturnPreviousVelocity = saturn.getVelocity()
+                .subtract(saturnForce.scalarMultiply(timeStep / saturnMass));
+        final Vector2D saturnPreviousPosition = saturnActualPosition
+                .subtract(saturnPreviousVelocity.scalarMultiply(timeStep))
+                .add(saturnForce.scalarMultiply((timeStep * timeStep) / (2 * saturnMass)));
+
+        // Initialize The ship's velocity and position at -deltaT
+        final Vector2D shipActualPosition = ship.getPosition();
+        final double shipMass = ship.getMass();
+        final Vector2D shipForce = getAppliedForce(ship);
+        final Vector2D shipPreviousVelocity = ship.getVelocity()
+                .subtract(shipForce.scalarMultiply(timeStep / shipMass));
+        final Vector2D shipPreviousPosition = shipActualPosition
+                .subtract(shipPreviousVelocity.scalarMultiply(timeStep))
+                .add(shipForce.scalarMultiply((timeStep * timeStep) / (2 * shipMass)));
+
+        // Calculate accelerations
+        final Vector2D sunPreviousAcceleration = getAcceleration(sunPreviousPosition,
+                earthPreviousPosition, jupiterPreviousPosition, saturnPreviousPosition, shipActualPosition,
+                sunMass, earthMass, jupiterMass, saturnMass, shipMass);
+
+        final Vector2D earthPreviousAcceleration = getAcceleration(earthPreviousPosition,
+                sunPreviousPosition, jupiterPreviousPosition, saturnPreviousPosition, shipActualPosition,
+                earthMass, sunMass, jupiterMass, saturnMass, shipMass);
+
+        final Vector2D jupiterPreviousAcceleration = getAcceleration(jupiterPreviousPosition,
+                sunPreviousPosition, earthPreviousPosition, saturnPreviousPosition, shipActualPosition,
+                jupiterMass, sunMass, earthMass, saturnMass, shipMass);
+
+        final Vector2D saturnPreviousAcceleration = getAcceleration(saturnPreviousPosition,
+                sunPreviousPosition, earthPreviousPosition, jupiterPreviousPosition, shipActualPosition,
+                saturnMass, sunMass, earthMass, jupiterMass, shipMass);
+
+        final Vector2D shipPreviousAcceleration = getAcceleration(shipPreviousPosition,
+                sunPreviousPosition, earthPreviousPosition, jupiterPreviousPosition, saturnPreviousPosition,
+                shipMass, sunMass, earthMass, jupiterMass, saturnMass);
+
+        // Save in map
+        this.previousAccelerations.put(sun, sunPreviousAcceleration);
+        this.previousAccelerations.put(earth, earthPreviousAcceleration);
+        this.previousAccelerations.put(jupiter, jupiterPreviousAcceleration);
+        this.previousAccelerations.put(saturn, saturnPreviousAcceleration);
+        this.previousAccelerations.put(ship, shipPreviousAcceleration);
+    }
+
 
     /**
      * @return The Sun.
@@ -122,21 +317,136 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
         return ship;
     }
 
-    @Override
-    public void update() {
-        // TODO: integrate equations
+    /**
+     * @return The actual time.
+     */
+    public double getActualTime() {
+        return actualTime;
+    }
 
-        // TODO: set new values to bodies
+    /**
+     * @return The time step.
+     */
+    public double getTimeStep() {
+        return timeStep;
     }
 
     @Override
+    public void update() {
+        // First calculate positions
+        final Vector2D sunNextPosition = getNextPosition(sun);
+        final Vector2D earthNextPosition = getNextPosition(earth);
+        final Vector2D jupiterNextPosition = getNextPosition(jupiter);
+        final Vector2D saturnNextPosition = getNextPosition(saturn);
+        final Vector2D shipNextPosition = getNextPosition(ship);
+        // Then calculate accelerations
+        final double sunMass = sun.getMass();
+        final double earthMass = earth.getMass();
+        final double jupiterMass = jupiter.getMass();
+        final double saturnMass = saturn.getMass();
+        final double shipMass = ship.getMass();
+        final Vector2D sunNextAcceleration = getAcceleration(sunNextPosition,
+                earthNextPosition, jupiterNextPosition, saturnNextPosition, shipNextPosition,
+                sunMass, earthMass, jupiterMass, saturnMass, shipMass);
+        final Vector2D earthNextAcceleration = getAcceleration(earthNextPosition,
+                sunNextPosition, jupiterNextPosition, saturnNextPosition, shipNextPosition,
+                earthMass, sunMass, jupiterMass, saturnMass, shipMass);
+        final Vector2D jupiterNextAcceleration = getAcceleration(jupiterNextPosition,
+                sunNextPosition, earthNextPosition, saturnNextPosition, shipNextPosition,
+                jupiterMass, sunMass, earthMass, saturnMass, shipMass);
+        final Vector2D saturnNextAcceleration = getAcceleration(saturnNextPosition,
+                sunNextPosition, earthNextPosition, jupiterNextPosition, shipNextPosition,
+                saturnMass, sunMass, earthMass, jupiterMass, shipMass);
+        final Vector2D shipNextAcceleration = getAcceleration(shipNextPosition,
+                sunNextPosition, earthNextPosition, jupiterNextPosition, saturnNextPosition,
+                shipMass, sunMass, earthMass, jupiterMass, saturnMass);
+        // Finally, calculate velocities
+        final Vector2D sunNextVelocity = getNextVelocity(sun, sunNextAcceleration);
+        final Vector2D earthNextVelocity = getNextVelocity(earth, earthNextAcceleration);
+        final Vector2D jupiterNextVelocity = getNextVelocity(jupiter, jupiterNextAcceleration);
+        final Vector2D saturnNextVelocity = getNextVelocity(saturn, saturnNextAcceleration);
+        final Vector2D shipNextVelocity = getNextVelocity(ship, shipNextAcceleration);
+
+        // Store accelerations
+        previousAccelerations.put(sun, sun.getAcceleration());
+        previousAccelerations.put(earth, earth.getAcceleration());
+        previousAccelerations.put(jupiter, jupiter.getAcceleration());
+        previousAccelerations.put(saturn, saturn.getAcceleration());
+        previousAccelerations.put(ship, ship.getAcceleration());
+
+        // Set new values
+        sun.setPosition(sunNextPosition);
+        sun.setVelocity(sunNextVelocity);
+        sun.setAcceleration(sunNextAcceleration);
+        earth.setPosition(earthNextPosition);
+        earth.setVelocity(earthNextVelocity);
+        earth.setAcceleration(earthNextAcceleration);
+        jupiter.setPosition(jupiterNextPosition);
+        jupiter.setVelocity(jupiterNextVelocity);
+        jupiter.setAcceleration(jupiterNextAcceleration);
+        saturn.setPosition(saturnNextPosition);
+        saturn.setVelocity(saturnNextVelocity);
+        saturn.setAcceleration(saturnNextAcceleration);
+        ship.setPosition(shipNextPosition);
+        ship.setVelocity(shipNextVelocity);
+        ship.setAcceleration(shipNextAcceleration);
+
+        // Update time
+        actualTime += timeStep;
+    }
+
+
+    @Override
     public void restart() {
-        // TODO: restart
+        sun.setPosition(sunInitialPosition);
+        sun.setVelocity(sunInitialVelocity);
+        sun.setAcceleration(sunInitialAcceleration);
+        earth.setPosition(earthInitialPosition);
+        earth.setVelocity(earthInitialVelocity);
+        earth.setAcceleration(earthInitialAcceleration);
+        jupiter.setPosition(jupiterInitialPosition);
+        jupiter.setVelocity(jupiterInitialVelocity);
+        jupiter.setAcceleration(jupiterInitialAcceleration);
+        saturn.setPosition(saturnInitialPosition);
+        saturn.setVelocity(saturnInitialVelocity);
+        saturn.setAcceleration(saturnInitialAcceleration);
+        ship.setPosition(shipInitialPosition);
+        ship.setVelocity(shipInitialVelocity);
+        ship.setAcceleration(shipInitialAcceleration);
+        actualTime = 0;
     }
 
     @Override
     public SolarSystemState outputState() {
         return new SolarSystemState(this);
+    }
+
+    /**
+     * Calculates the next position to the given {@code body}.
+     *
+     * @param body The {@link Body} suffering the position change.
+     * @return The next position.
+     */
+    private Vector2D getNextPosition(Body body) {
+        return body.getPosition()
+                .add(body.getVelocity().scalarMultiply(timeStep))
+                .add(body.getAcceleration().scalarMultiply((2d / 3d) * timeStep * timeStep))
+                .subtract(previousAccelerations.get(body).scalarMultiply((1d / 6d) * timeStep * timeStep));
+    }
+
+    /**
+     * Calculates the next velocity to the given {@code body}.
+     *
+     * @param body             The {@link Body} suffering the position change.
+     * @param nextAcceleration The next acceleration (i.e used for Beeman integration).
+     * @return The next position.
+     */
+    private Vector2D getNextVelocity(Body body, Vector2D nextAcceleration) {
+
+        return body.getVelocity()
+                .add(nextAcceleration.scalarMultiply((1d / 3d) * timeStep))
+                .add(body.getAcceleration().scalarMultiply((5d / 6d) * timeStep))
+                .subtract(previousAccelerations.get(body).scalarMultiply((1d / 6d) * timeStep));
     }
 
     /**
@@ -150,6 +460,40 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
                 .stream()
                 .map(body::appliedGravitationalForce)
                 .reduce(Vector2D.ZERO, Vector2D::add);
+    }
+
+    /**
+     * Calculates the accelerations according to the given positions and masses.
+     *
+     * @param affectedPosition    The position of the affected body.
+     * @param influencer1Position The position of the first influencer.
+     * @param influencer2Position The position of the second influencer.
+     * @param influencer3Position The position of the third influencer.
+     * @param influencer4Position The position of the fourth influencer.
+     * @param affectedMass        The mass of the affected body.
+     * @param influencer1Mass     The mass of the first influencer.
+     * @param influencer2Mass     The mass of the second influencer.
+     * @param influencer3Mass     The mass of the third influencer.
+     * @param influencer4Mass     The mass of the fourth influencer.
+     * @return The calculated acceleration.
+     */
+    private static Vector2D getAcceleration(Vector2D affectedPosition,
+                                            Vector2D influencer1Position, Vector2D influencer2Position,
+                                            Vector2D influencer3Position, Vector2D influencer4Position,
+                                            double affectedMass,
+                                            double influencer1Mass, double influencer2Mass,
+                                            double influencer3Mass, double influencer4Mass) {
+        // Calculate acceleration for the Sun
+        final Vector2D earthOverSunForce = Functions
+                .gravitationalForce(affectedMass, influencer1Mass).apply(affectedPosition, influencer1Position);
+        final Vector2D jupiterOverSunForce = Functions
+                .gravitationalForce(affectedMass, influencer2Mass).apply(affectedPosition, influencer2Position);
+        final Vector2D saturnOverSunForce = Functions
+                .gravitationalForce(affectedMass, influencer3Mass).apply(affectedPosition, influencer3Position);
+        final Vector2D shipOverSunForce = Functions
+                .gravitationalForce(affectedMass, influencer4Mass).apply(affectedPosition, influencer4Position);
+        return Stream.of(earthOverSunForce, jupiterOverSunForce, saturnOverSunForce, shipOverSunForce)
+                .reduce(Vector2D.ZERO, Vector2D::add).scalarMultiply(1 / affectedMass);
     }
 
     /**

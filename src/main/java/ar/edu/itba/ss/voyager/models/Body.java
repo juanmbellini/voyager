@@ -67,10 +67,7 @@ public class Body implements StateHolder<Body.BodyState> {
      * @return The force.
      */
     public Vector2D appliedGravitationalForce(final Body other) {
-        //TODO: also this could be in System as a force provider
-        final Vector2D difference = other.getPosition().subtract(this.position);
-        final double factor = -(Constants.G * this.mass * other.getMass()) / Math.pow(difference.getNorm(), 3);
-        return difference.scalarMultiply(factor);
+        return Functions.gravitationalForce(this.mass, other.mass).apply(this.position, other.position);
     }
 
     /**
@@ -99,6 +96,33 @@ public class Body implements StateHolder<Body.BodyState> {
      */
     public Vector2D getAcceleration() {
         return acceleration;
+    }
+
+    /**
+     * Sets a new value for the position.
+     *
+     * @param position The new position.
+     */
+    public void setPosition(Vector2D position) {
+        this.position = position;
+    }
+
+    /**
+     * Sets a new value for the velocity.
+     *
+     * @param velocity The new velocity.
+     */
+    public void setVelocity(Vector2D velocity) {
+        this.velocity = velocity;
+    }
+
+    /**
+     * Sets a new value for the acceleration.
+     *
+     * @param acceleration The new acceleration.
+     */
+    public void setAcceleration(Vector2D acceleration) {
+        this.acceleration = acceleration;
     }
 
     /**
