@@ -133,6 +133,7 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
     /**
      * Constructor.
      *
+     * @param timeStep                   The time step (i.e how much time elapses between two update events).
      * @param sunInitialPosition         The Sun's initial position.
      * @param sunInitialVelocity         The Sun's initial velocity.
      * @param sunInitialAcceleration     The Sun's initial acceleration.
@@ -148,9 +149,9 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      * @param shipInitialPosition        The ship's initial position.
      * @param shipInitialVelocity        The ship's initial velocity.
      * @param shipInitialAcceleration    The ship's initial acceleration.
-     * @param timeStep                   The time step (i.e how much time elapses between two update events).
      */
-    public SolarSystem(final Vector2D sunInitialPosition, final Vector2D sunInitialVelocity,
+    public SolarSystem(double timeStep,
+                       final Vector2D sunInitialPosition, final Vector2D sunInitialVelocity,
                        final Vector2D sunInitialAcceleration,
                        final Vector2D earthInitialPosition, final Vector2D earthInitialVelocity,
                        final Vector2D earthInitialAcceleration,
@@ -159,8 +160,7 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
                        final Vector2D saturnInitialPosition, final Vector2D saturnInitialVelocity,
                        final Vector2D saturnInitialAcceleration,
                        final Vector2D shipInitialPosition, final Vector2D shipInitialVelocity,
-                       final Vector2D shipInitialAcceleration,
-                       double timeStep) {
+                       final Vector2D shipInitialAcceleration) {
         this.sunInitialPosition = sunInitialPosition;
         this.sunInitialVelocity = sunInitialVelocity;
         this.sunInitialAcceleration = sunInitialAcceleration;
@@ -285,50 +285,45 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
     /**
      * @return The Sun.
      */
-    public Body getSun() {
+    private Body getSun() {
         return sun;
     }
 
     /**
      * @return The Earth.
      */
-    public Body getEarth() {
+    private Body getEarth() {
         return earth;
     }
 
     /**
      * @return Jupiter.
      */
-    public Body getJupiter() {
+    private Body getJupiter() {
         return jupiter;
     }
 
     /**
      * @return Saturn.
      */
-    public Body getSaturn() {
+    private Body getSaturn() {
         return saturn;
     }
 
     /**
      * @return The ship.
      */
-    public Body getShip() {
+    private Body getShip() {
         return ship;
     }
 
     /**
-     * @return The actual time.
+     * Indicates whether the ship reached Saturn' orbit.
+     *
+     * @return {@code true} if the ship already wen't through Saturn's orbit, or {@code false} otherwise.
      */
-    public double getActualTime() {
-        return actualTime;
-    }
-
-    /**
-     * @return The time step.
-     */
-    public double getTimeStep() {
-        return timeStep;
+    public boolean reachedSaturnOrbit() {
+        return false; // TODO: implement
     }
 
     @Override

@@ -1,8 +1,12 @@
 package ar.edu.itba.ss.voyager;
 
+import ar.edu.itba.ss.g7.engine.simulation.SimulationEngine;
+import ar.edu.itba.ss.voyager.models.SolarSystem;
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,10 +22,28 @@ public class Voyager implements CommandLineRunner, InitializingBean {
      */
     private static final Logger LOGGER = LoggerFactory.getLogger(Voyager.class);
 
+    /**
+     * The {@link SolarSystem} to be simulated.
+     */
+    private final SimulationEngine<SolarSystem.SolarSystemState, SolarSystem> engine;
+
+    @Autowired
+    public Voyager() {
+        // TODO: initialize with correct values
+        final SolarSystem solarSystem = new SolarSystem(0,
+                Vector2D.ZERO, null, null,
+                null, null, null,
+                null, null, null,
+                null, null, null,
+                null, null, null
+        );
+        this.engine = new SimulationEngine<>(solarSystem);
+    }
+
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        // Initialize me here...
+        this.engine.initialize();
     }
 
     @Override
@@ -40,7 +62,7 @@ public class Voyager implements CommandLineRunner, InitializingBean {
      */
     private void simulate() {
         LOGGER.info("Starting simulation...");
-        // TODO: simulate here
+        this.engine.simulate(SolarSystem::reachedSaturnOrbit);
         LOGGER.info("Finished simulation");
     }
 
