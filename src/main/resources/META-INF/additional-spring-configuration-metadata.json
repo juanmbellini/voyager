@@ -1,6 +1,96 @@
 {
   "properties": [
     {
+      "name": "custom.system.earth.position.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial position of the Earth."
+    },
+    {
+      "name": "custom.system.earth.position.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial position of the Earth."
+    },
+    {
+      "name": "custom.system.earth.velocity.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial velocity of the Earth."
+    },
+    {
+      "name": "custom.system.earth.velocity.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial velocity of the Earth."
+    },
+    {
+      "name": "custom.system.earth.acceleration.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial acceleration of the Earth."
+    },
+    {
+      "name": "custom.system.earth.acceleration.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial acceleration of the Earth."
+    },
+    {
+      "name": "custom.system.jupiter.position.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial position of Jupiter."
+    },
+    {
+      "name": "custom.system.jupiter.position.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial position of Jupiter."
+    },
+    {
+      "name": "custom.system.jupiter.velocity.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial velocity of Jupiter."
+    },
+    {
+      "name": "custom.system.jupiter.velocity.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial velocity of Jupiter."
+    },
+    {
+      "name": "custom.system.jupiter.acceleration.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial acceleration of Jupiter."
+    },
+    {
+      "name": "custom.system.jupiter.acceleration.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial acceleration of Jupiter."
+    },
+    {
+      "name": "custom.system.saturn.position.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial position of Saturn."
+    },
+    {
+      "name": "custom.system.saturn.position.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial position of Saturn."
+    },
+    {
+      "name": "custom.system.saturn.velocity.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial velocity of Saturn."
+    },
+    {
+      "name": "custom.system.saturn.velocity.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial velocity of Saturn."
+    },
+    {
+      "name": "custom.system.saturn.acceleration.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial acceleration of Saturn."
+    },
+    {
+      "name": "custom.system.saturn.acceleration.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial acceleration of Saturn."
+    },
+    {
       "name": "custom.simulation.time-step",
       "type": "java.lang.Double",
       "description": "The time step (i.e how much time elapses in one simulation step)."

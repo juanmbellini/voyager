@@ -15,6 +15,11 @@ import java.util.stream.Stream;
  */
 public class SolarSystem implements System<SolarSystem.SolarSystemState> {
 
+    /**
+     * Indicates the ship's altitude in regards to the Earth's surface (in meters).
+     */
+    private static final double SHIP_ALTITUDE = 1500000;
+
     // ================================================================================================================
     // System stuff
     // ================================================================================================================
@@ -54,7 +59,7 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
     private final double timeStep;
 
     /**
-     * The amount of time the system has been oscillating.
+     * The amount of time the system has existed.
      */
     private double actualTime;
 
@@ -63,6 +68,9 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      */
     private final Map<Body, List<Body>> influencers;
 
+    /**
+     * A {@link Map} containing the previous accelerations for the the bodies in this solar system.
+     */
     private final Map<Body, Vector2D> previousAccelerations;
 
     // ================================================================================================================
@@ -134,9 +142,6 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      * Constructor.
      *
      * @param timeStep                   The time step (i.e how much time elapses between two update events).
-     * @param sunInitialPosition         The Sun's initial position.
-     * @param sunInitialVelocity         The Sun's initial velocity.
-     * @param sunInitialAcceleration     The Sun's initial acceleration.
      * @param earthInitialPosition       The Earth's initial position.
      * @param earthInitialVelocity       The Earth's initial velocity.
      * @param earthInitialAcceleration   The Earth's initial acceleration.
@@ -146,24 +151,17 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      * @param saturnInitialPosition      Saturn's initial position.
      * @param saturnInitialVelocity      Saturn's initial velocity.
      * @param saturnInitialAcceleration  Saturn's initial acceleration.
-     * @param shipInitialPosition        The ship's initial position.
-     * @param shipInitialVelocity        The ship's initial velocity.
-     * @param shipInitialAcceleration    The ship's initial acceleration.
      */
     public SolarSystem(double timeStep,
-                       final Vector2D sunInitialPosition, final Vector2D sunInitialVelocity,
-                       final Vector2D sunInitialAcceleration,
                        final Vector2D earthInitialPosition, final Vector2D earthInitialVelocity,
                        final Vector2D earthInitialAcceleration,
                        final Vector2D jupiterInitialPosition, final Vector2D jupiterInitialVelocity,
                        final Vector2D jupiterInitialAcceleration,
                        final Vector2D saturnInitialPosition, final Vector2D saturnInitialVelocity,
-                       final Vector2D saturnInitialAcceleration,
-                       final Vector2D shipInitialPosition, final Vector2D shipInitialVelocity,
-                       final Vector2D shipInitialAcceleration) {
-        this.sunInitialPosition = sunInitialPosition;
-        this.sunInitialVelocity = sunInitialVelocity;
-        this.sunInitialAcceleration = sunInitialAcceleration;
+                       final Vector2D saturnInitialAcceleration) {
+        this.sunInitialPosition = Vector2D.ZERO;
+        this.sunInitialVelocity = Vector2D.ZERO;
+        this.sunInitialAcceleration = Vector2D.ZERO;
         this.earthInitialPosition = earthInitialPosition;
         this.earthInitialVelocity = earthInitialVelocity;
         this.earthInitialAcceleration = earthInitialAcceleration;
@@ -173,9 +171,9 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
         this.saturnInitialPosition = saturnInitialPosition;
         this.saturnInitialVelocity = saturnInitialVelocity;
         this.saturnInitialAcceleration = saturnInitialAcceleration;
-        this.shipInitialPosition = shipInitialPosition;
-        this.shipInitialVelocity = shipInitialVelocity;
-        this.shipInitialAcceleration = shipInitialAcceleration;
+        this.shipInitialPosition = calculateShipInitialPosition(earthInitialPosition);
+        this.shipInitialVelocity = calculateShipInitialVelocity(earthInitialPosition);
+        this.shipInitialAcceleration = Vector2D.ZERO;
 
         this.sun = BodyType.SUN.provide(sunInitialPosition, sunInitialVelocity, sunInitialAcceleration);
         this.earth = BodyType.EARTH.provide(earthInitialPosition, earthInitialVelocity, earthInitialAcceleration);
@@ -315,6 +313,13 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      */
     private Body getShip() {
         return ship;
+    }
+
+    /**
+     * @return The amount of time the system has existed.
+     */
+    public double getActualTime() {
+        return actualTime;
     }
 
     /**
@@ -488,6 +493,31 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
                 .gravitationalForce(affectedMass, influencer4Mass, affectedPosition, influencer4Position);
         return Stream.of(earthOverSunForce, jupiterOverSunForce, saturnOverSunForce, shipOverSunForce)
                 .reduce(Vector2D.ZERO, Vector2D::add).scalarMultiply(1 / affectedMass);
+    }
+
+    /**
+     * Calculates the ship's initial position, which depends on the Earth's.
+     *
+     * @param earthInitialPosition The Earth's initial position.
+     * @return The ship's initial position.
+     * @implNote This method takes the Earth position (which is relative to the Sun),
+     * and calculates the norm of it. Then it adds to the norm the ship's altitude (given by {@link #SHIP_ALTITUDE}),
+     * to calculate a stretching factor.
+     * This stretching factor is multiplied to a unit factor generated from the Earth's position).
+     */
+    private static Vector2D calculateShipInitialPosition(Vector2D earthInitialPosition) {
+        final double stretchingFactor = earthInitialPosition.getNorm() + SHIP_ALTITUDE;
+        return earthInitialPosition.normalize().scalarMultiply(stretchingFactor);
+    }
+
+    /**
+     * Calculates the ship's initial velocity, which depends on the Earth's initial position.
+     *
+     * @param earthInitialPosition The Earth's initial position.
+     * @return The ship's initial velocity.
+     */
+    private static Vector2D calculateShipInitialVelocity(Vector2D earthInitialPosition) {
+        return Vector2D.ZERO; // TODO: implement
     }
 
     /**

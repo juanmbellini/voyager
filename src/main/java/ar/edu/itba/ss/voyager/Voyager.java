@@ -1,8 +1,8 @@
 package ar.edu.itba.ss.voyager;
 
 import ar.edu.itba.ss.g7.engine.simulation.SimulationEngine;
+import ar.edu.itba.ss.voyager.io.ProgramArguments;
 import ar.edu.itba.ss.voyager.models.SolarSystem;
-import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -28,15 +28,11 @@ public class Voyager implements CommandLineRunner, InitializingBean {
     private final SimulationEngine<SolarSystem.SolarSystemState, SolarSystem> engine;
 
     @Autowired
-    public Voyager() {
-        // TODO: initialize with correct values
+    public Voyager(ProgramArguments arguments) {
         final SolarSystem solarSystem = new SolarSystem(0,
-                Vector2D.ZERO, null, null,
-                null, null, null,
-                null, null, null,
-                null, null, null,
-                null, null, null
-        );
+                arguments.getEarthPosition(), arguments.getEarthVelocity(), arguments.getEarthAcceleration(),
+                arguments.getJupiterPosition(), arguments.getJupiterVelocity(), arguments.getJupiterAcceleration(),
+                arguments.getSaturnPosition(), arguments.getSaturnVelocity(), arguments.getSaturnAcceleration());
         this.engine = new SimulationEngine<>(solarSystem);
     }
 
