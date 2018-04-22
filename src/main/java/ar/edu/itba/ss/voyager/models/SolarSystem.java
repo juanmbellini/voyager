@@ -318,7 +318,7 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
     }
 
     /**
-     * Indicates whether the ship reached Saturn' orbit.
+     * Indicates whether the ship reached Saturn's orbit.
      *
      * @return {@code true} if the ship already wen't through Saturn's orbit, or {@code false} otherwise.
      */
