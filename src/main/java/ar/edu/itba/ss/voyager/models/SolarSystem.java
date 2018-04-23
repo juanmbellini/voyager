@@ -16,9 +16,14 @@ import java.util.stream.Stream;
 public class SolarSystem implements System<SolarSystem.SolarSystemState> {
 
     /**
-     * Indicates the ship's altitude in regards to the Earth's surface (in meters).
+     * Indicates the ship's altitude in regards to the Earth's surface in meters.
      */
     private static final double SHIP_ALTITUDE = 1500000;
+
+    /**
+     * The ship's initial speed (velocity module) in meters over seconds
+     */
+    private static final double SHIP_INITIAL_SPEED = 14000;
 
     // ================================================================================================================
     // System stuff
@@ -157,8 +162,8 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
                        final Vector2D jupiterInitialPosition, final Vector2D jupiterInitialVelocity,
                        final Vector2D saturnInitialPosition, final Vector2D saturnInitialVelocity) {
         // Initialize positions and velocities
-        this.sunInitialPosition = Vector2D.ZERO;
-        this.sunInitialVelocity = Vector2D.ZERO;
+        this.sunInitialPosition = sunInitialPosition;
+        this.sunInitialVelocity = sunInitialVelocity;
         this.earthInitialPosition = earthInitialPosition;
         this.earthInitialVelocity = earthInitialVelocity;
         this.jupiterInitialPosition = jupiterInitialPosition;
@@ -348,7 +353,7 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      * @return {@code true} if the ship already wen't through Saturn's orbit, or {@code false} otherwise.
      */
     public boolean reachedSaturnOrbit() {
-        return false; // TODO: implement
+        return actualTime >= 3.154e+7; // TODO: implement
     }
 
     @Override
@@ -503,15 +508,15 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
                                             double affectedMass,
                                             double influencer1Mass, double influencer2Mass,
                                             double influencer3Mass, double influencer4Mass) {
-        final Vector2D earthOverSunForce = Utils
+        final Vector2D influencer1Force = Utils
                 .gravitationalForce(affectedMass, influencer1Mass, affectedPosition, influencer1Position);
-        final Vector2D jupiterOverSunForce = Utils
+        final Vector2D influencer2Force = Utils
                 .gravitationalForce(affectedMass, influencer2Mass, affectedPosition, influencer2Position);
-        final Vector2D saturnOverSunForce = Utils
+        final Vector2D influencer3Force = Utils
                 .gravitationalForce(affectedMass, influencer3Mass, affectedPosition, influencer3Position);
-        final Vector2D shipOverSunForce = Utils
+        final Vector2D influencer4Force = Utils
                 .gravitationalForce(affectedMass, influencer4Mass, affectedPosition, influencer4Position);
-        return Stream.of(earthOverSunForce, jupiterOverSunForce, saturnOverSunForce, shipOverSunForce)
+        return Stream.of(influencer1Force, influencer2Force, influencer3Force, influencer4Force)
                 .reduce(Vector2D.ZERO, Vector2D::add).scalarMultiply(1 / affectedMass);
     }
 
@@ -537,7 +542,10 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      * @return The ship's initial velocity.
      */
     private static Vector2D calculateShipInitialVelocity(Vector2D earthInitialPosition) {
-        return Vector2D.ZERO; // TODO: implement
+        final Vector2D earthPositionUnitVector = earthInitialPosition.normalize();
+        final Vector2D shipInitialVelocityUnitVector =
+                new Vector2D(-earthPositionUnitVector.getY(), earthPositionUnitVector.getX());
+        return shipInitialVelocityUnitVector.scalarMultiply(SHIP_INITIAL_SPEED);
     }
 
     /**

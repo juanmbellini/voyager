@@ -38,7 +38,7 @@ public class OvitoFileSaverImpl extends OvitoFileSaver<SolarSystem.SolarSystemSt
         // Save Saturn's state
         saveBody(data, solarSystemState.getSaturn(), 218, 165, 32); // Saturn is brown
         // Save the ship's state
-        saveBody(data, solarSystemState.getSaturn(), 192, 192, 192); // The ship is gray
+        saveBody(data, solarSystemState.getShip(), 192, 192, 192); // The ship is gray
         // Append data into the Writer
         writer.append(data);
     }

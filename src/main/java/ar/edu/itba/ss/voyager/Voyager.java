@@ -35,7 +35,7 @@ public class Voyager implements CommandLineRunner, InitializingBean {
 
     @Autowired
     public Voyager(ProgramArguments arguments) {
-        final SolarSystem solarSystem = new SolarSystem(0,
+        final SolarSystem solarSystem = new SolarSystem(arguments.getTimeStep(),
                 arguments.getSunPosition(), arguments.getSunVelocity(),
                 arguments.getEarthPosition(), arguments.getEarthVelocity(),
                 arguments.getJupiterPosition(), arguments.getJupiterVelocity(),
