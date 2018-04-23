@@ -30,9 +30,10 @@ public class Voyager implements CommandLineRunner, InitializingBean {
     @Autowired
     public Voyager(ProgramArguments arguments) {
         final SolarSystem solarSystem = new SolarSystem(0,
-                arguments.getEarthPosition(), arguments.getEarthVelocity(), arguments.getEarthAcceleration(),
-                arguments.getJupiterPosition(), arguments.getJupiterVelocity(), arguments.getJupiterAcceleration(),
-                arguments.getSaturnPosition(), arguments.getSaturnVelocity(), arguments.getSaturnAcceleration());
+                arguments.getSunPosition(), arguments.getSunVelocity(),
+                arguments.getEarthPosition(), arguments.getEarthVelocity(),
+                arguments.getJupiterPosition(), arguments.getJupiterVelocity(),
+                arguments.getSaturnPosition(), arguments.getSaturnVelocity());
         this.engine = new SimulationEngine<>(solarSystem);
     }
 

@@ -163,7 +163,7 @@ public class Body implements StateHolder<Body.BodyState> {
          *
          * @param body The {@link Body}'s whose state will be represented.
          */
-        /* default */ BodyState(final Body body) {
+        /* package */ BodyState(final Body body) {
             mass = body.getMass();
             position = body.getPosition(); // The Vector2D class is unmodifiable.
             velocity = body.getVelocity(); // The Vector2D class is unmodifiable.

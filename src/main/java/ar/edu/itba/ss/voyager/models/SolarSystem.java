@@ -141,51 +141,71 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
     /**
      * Constructor.
      *
-     * @param timeStep                   The time step (i.e how much time elapses between two update events).
-     * @param earthInitialPosition       The Earth's initial position.
-     * @param earthInitialVelocity       The Earth's initial velocity.
-     * @param earthInitialAcceleration   The Earth's initial acceleration.
-     * @param jupiterInitialPosition     Jupiter's initial position.
-     * @param jupiterInitialVelocity     Jupiter's initial velocity.
-     * @param jupiterInitialAcceleration Jupiter's initial acceleration.
-     * @param saturnInitialPosition      Saturn's initial position.
-     * @param saturnInitialVelocity      Saturn's initial velocity.
-     * @param saturnInitialAcceleration  Saturn's initial acceleration.
+     * @param timeStep               The time step (i.e how much time elapses between two update events).
+     * @param sunInitialPosition     The Sun's initial position.
+     * @param sunInitialVelocity     The Sun's initial velocity.
+     * @param earthInitialPosition   The Earth's initial position.
+     * @param earthInitialVelocity   The Earth's initial velocity.
+     * @param jupiterInitialPosition Jupiter's initial position.
+     * @param jupiterInitialVelocity Jupiter's initial velocity.
+     * @param saturnInitialPosition  Saturn's initial position.
+     * @param saturnInitialVelocity  Saturn's initial velocity.
      */
     public SolarSystem(double timeStep,
+                       final Vector2D sunInitialPosition, final Vector2D sunInitialVelocity,
                        final Vector2D earthInitialPosition, final Vector2D earthInitialVelocity,
-                       final Vector2D earthInitialAcceleration,
                        final Vector2D jupiterInitialPosition, final Vector2D jupiterInitialVelocity,
-                       final Vector2D jupiterInitialAcceleration,
-                       final Vector2D saturnInitialPosition, final Vector2D saturnInitialVelocity,
-                       final Vector2D saturnInitialAcceleration) {
+                       final Vector2D saturnInitialPosition, final Vector2D saturnInitialVelocity) {
+        // Initialize positions and velocities
         this.sunInitialPosition = Vector2D.ZERO;
         this.sunInitialVelocity = Vector2D.ZERO;
-        this.sunInitialAcceleration = Vector2D.ZERO;
         this.earthInitialPosition = earthInitialPosition;
         this.earthInitialVelocity = earthInitialVelocity;
-        this.earthInitialAcceleration = earthInitialAcceleration;
         this.jupiterInitialPosition = jupiterInitialPosition;
         this.jupiterInitialVelocity = jupiterInitialVelocity;
-        this.jupiterInitialAcceleration = jupiterInitialAcceleration;
         this.saturnInitialPosition = saturnInitialPosition;
         this.saturnInitialVelocity = saturnInitialVelocity;
-        this.saturnInitialAcceleration = saturnInitialAcceleration;
         this.shipInitialPosition = calculateShipInitialPosition(earthInitialPosition);
         this.shipInitialVelocity = calculateShipInitialVelocity(earthInitialPosition);
-        this.shipInitialAcceleration = Vector2D.ZERO;
 
+        // Calculate initial accelerations according to initial positions
+        this.sunInitialAcceleration = getAcceleration(sunInitialPosition,
+                earthInitialPosition, jupiterInitialPosition, saturnInitialPosition, shipInitialPosition,
+                Constants.SUN_MASS,
+                Constants.EARTH_MASS, Constants.JUPITER_MASS, Constants.SATURN_MASS, Constants.SHIP_MASS);
+        this.earthInitialAcceleration = getAcceleration(earthInitialPosition,
+                sunInitialPosition, jupiterInitialPosition, saturnInitialPosition, shipInitialPosition,
+                Constants.EARTH_MASS,
+                Constants.SUN_MASS, Constants.JUPITER_MASS, Constants.SATURN_MASS, Constants.SHIP_MASS);
+        this.jupiterInitialAcceleration = getAcceleration(jupiterInitialPosition,
+                sunInitialPosition, earthInitialPosition, saturnInitialPosition, shipInitialPosition,
+                Constants.JUPITER_MASS,
+                Constants.SUN_MASS, Constants.EARTH_MASS, Constants.SATURN_MASS, Constants.SHIP_MASS);
+        this.saturnInitialAcceleration = getAcceleration(saturnInitialPosition,
+                sunInitialPosition, earthInitialPosition, jupiterInitialPosition, shipInitialPosition,
+                Constants.SATURN_MASS,
+                Constants.SUN_MASS, Constants.EARTH_MASS, Constants.JUPITER_MASS, Constants.SHIP_MASS);
+        this.shipInitialAcceleration = getAcceleration(shipInitialPosition,
+                sunInitialPosition, earthInitialPosition, jupiterInitialPosition, saturnInitialPosition,
+                Constants.SHIP_MASS,
+                Constants.SUN_MASS, Constants.EARTH_MASS, Constants.JUPITER_MASS, Constants.SATURN_MASS);
+
+        // Initialize bodies
         this.sun = BodyType.SUN.provide(sunInitialPosition, sunInitialVelocity, sunInitialAcceleration);
         this.earth = BodyType.EARTH.provide(earthInitialPosition, earthInitialVelocity, earthInitialAcceleration);
         this.jupiter = BodyType.JUPITER.provide(jupiterInitialPosition, jupiterInitialVelocity, jupiterInitialAcceleration);
         this.saturn = BodyType.SATURN.provide(saturnInitialPosition, saturnInitialVelocity, saturnInitialAcceleration);
         this.ship = BodyType.SHIP.provide(shipInitialPosition, shipInitialVelocity, shipInitialAcceleration);
+
+        // Initialize the influencers maps
         this.influencers = new HashMap<>();
         this.influencers.put(sun, Stream.of(earth, jupiter, saturn, ship).collect(Collectors.toList()));
         this.influencers.put(earth, Stream.of(sun, jupiter, saturn, ship).collect(Collectors.toList()));
         this.influencers.put(jupiter, Stream.of(sun, earth, saturn, ship).collect(Collectors.toList()));
         this.influencers.put(saturn, Stream.of(sun, earth, jupiter, ship).collect(Collectors.toList()));
         this.influencers.put(ship, Stream.of(sun, earth, jupiter, saturn).collect(Collectors.toList()));
+
+        // Initialize integration mechanism stuff
         this.timeStep = timeStep;
         this.previousAccelerations = new HashMap<>();
         initializePreviousAccelerations();
@@ -551,7 +571,7 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
          *
          * @param solarSystem The {@link SolarSystem} whose state will be saved.
          */
-        public SolarSystemState(SolarSystem solarSystem) {
+        /* package */ SolarSystemState(SolarSystem solarSystem) {
             this.sun = solarSystem.getSun().outputState();
             this.earth = solarSystem.getEarth().outputState();
             this.jupiter = solarSystem.getJupiter().outputState();

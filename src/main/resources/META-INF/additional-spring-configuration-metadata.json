@@ -1,6 +1,26 @@
 {
   "properties": [
     {
+      "name": "custom.system.sun.position.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial position of the Sun."
+    },
+    {
+      "name": "custom.system.sun.position.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial position of the Sun."
+    },
+    {
+      "name": "custom.system.sun.velocity.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial velocity of the Sun."
+    },
+    {
+      "name": "custom.system.sun.velocity.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial velocity of the Sun."
+    },
+    {
       "name": "custom.system.earth.position.x",
       "type": "java.lang.Double",
       "description": "The 'x' component of the initial position of the Earth."
@@ -19,16 +39,6 @@
       "name": "custom.system.earth.velocity.y",
       "type": "java.lang.Double",
       "description": "The 'y' component of the initial velocity of the Earth."
-    },
-    {
-      "name": "custom.system.earth.acceleration.x",
-      "type": "java.lang.Double",
-      "description": "The 'x' component of the initial acceleration of the Earth."
-    },
-    {
-      "name": "custom.system.earth.acceleration.y",
-      "type": "java.lang.Double",
-      "description": "The 'y' component of the initial acceleration of the Earth."
     },
     {
       "name": "custom.system.jupiter.position.x",
@@ -51,16 +61,6 @@
       "description": "The 'y' component of the initial velocity of Jupiter."
     },
     {
-      "name": "custom.system.jupiter.acceleration.x",
-      "type": "java.lang.Double",
-      "description": "The 'x' component of the initial acceleration of Jupiter."
-    },
-    {
-      "name": "custom.system.jupiter.acceleration.y",
-      "type": "java.lang.Double",
-      "description": "The 'y' component of the initial acceleration of Jupiter."
-    },
-    {
       "name": "custom.system.saturn.position.x",
       "type": "java.lang.Double",
       "description": "The 'x' component of the initial position of Saturn."
@@ -79,16 +79,6 @@
       "name": "custom.system.saturn.velocity.y",
       "type": "java.lang.Double",
       "description": "The 'y' component of the initial velocity of Saturn."
-    },
-    {
-      "name": "custom.system.saturn.acceleration.x",
-      "type": "java.lang.Double",
-      "description": "The 'x' component of the initial acceleration of Saturn."
-    },
-    {
-      "name": "custom.system.saturn.acceleration.y",
-      "type": "java.lang.Double",
-      "description": "The 'y' component of the initial acceleration of Saturn."
     },
     {
       "name": "custom.simulation.time-step",
