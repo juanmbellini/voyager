@@ -30,11 +30,6 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      */
     private static final double SHIP_INITIAL_SPEED = 11000;
 
-    /**
-     * Amount of seconds it takes to Saturn to orbit the Sun.
-     */
-    private static final double SATURNIAN_YEAR_SECONDS = 929292480d;
-
     // ================================================================================================================
     // System stuff
     // ================================================================================================================
@@ -371,7 +366,7 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      * @return {@code true} if the ship already wen't through Saturn's orbit, or {@code false} otherwise.
      */
     public boolean finishMovement() {
-        return actualTime >= saturnianYears * SATURNIAN_YEAR_SECONDS;
+        return actualTime >= saturnianYears * Constants.SATURNIAN_YEAR_SECONDS;
     }
 
     @Override

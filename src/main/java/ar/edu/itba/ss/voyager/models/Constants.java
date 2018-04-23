@@ -30,4 +30,8 @@ public class Constants {
      * The Ship's mass (in kgs).
      */
     public final static double SHIP_MASS = 721.0;
+    /**
+     * Amount of seconds it takes to Saturn to orbit the Sun.
+     */
+    public static final double SATURNIAN_YEAR_SECONDS = 929292480d;
 }

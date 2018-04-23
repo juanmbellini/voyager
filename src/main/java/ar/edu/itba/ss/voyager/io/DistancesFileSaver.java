@@ -15,12 +15,26 @@ import java.util.stream.Collectors;
 public class DistancesFileSaver extends TextFileSaver<SolarSystem.SolarSystemState> {
 
     /**
+     * The time step.
+     */
+    private final double timeStep;
+
+    /**
+     * The total time.
+     */
+    private final double totalTime;
+
+    /**
      * Constructor.
      *
-     * @param filePath Path to the file to be saved.
+     * @param filePath  Path to the file to be saved.
+     * @param timeStep  The time step.
+     * @param totalTime The total time.
      */
-    public DistancesFileSaver(String filePath) {
+    public DistancesFileSaver(String filePath, double timeStep, double totalTime) {
         super(filePath);
+        this.timeStep = timeStep;
+        this.totalTime = totalTime;
     }
 
     @Override
@@ -49,6 +63,10 @@ public class DistancesFileSaver extends TextFileSaver<SolarSystem.SolarSystemSta
                 .append(distanceToJupiter)
                 .append("\n")
                 .append(distanceToSaturn)
+                .append("\n")
+                .append("dt = ").append(String.valueOf(timeStep)).append(";")
+                .append("\n")
+                .append("totalTime = ").append(String.valueOf(totalTime)).append(";")
                 .append("\n");
     }
 }

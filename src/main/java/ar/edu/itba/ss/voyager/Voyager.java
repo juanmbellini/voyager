@@ -3,6 +3,7 @@ package ar.edu.itba.ss.voyager;
 import ar.edu.itba.ss.g7.engine.io.DataSaver;
 import ar.edu.itba.ss.g7.engine.simulation.SimulationEngine;
 import ar.edu.itba.ss.voyager.io.*;
+import ar.edu.itba.ss.voyager.models.Constants;
 import ar.edu.itba.ss.voyager.models.SolarSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,9 +60,12 @@ public class Voyager implements CommandLineRunner, InitializingBean {
                 arguments.getSaturnPosition(), arguments.getSaturnVelocity());
         this.engine = new SimulationEngine<>(solarSystem);
         this.ovitoFileSaver = new OvitoFileSaverImpl(arguments.getOvitoFilePath());
-        this.trajectoryFileSaver = new TrajectoryFileSaver(arguments.getTrajectoryFilePath());
-        this.distancesFileSaver = new DistancesFileSaver(arguments.getDistancesFilePath());
-        this.speedFileSaver = new SpeedFileSaver(arguments.getSpeedFilePath());
+        this.trajectoryFileSaver = new TrajectoryFileSaver(arguments.getTrajectoryFilePath(),
+                arguments.getTimeStep(), arguments.getAmountOfYears() * Constants.SATURNIAN_YEAR_SECONDS);
+        this.distancesFileSaver = new DistancesFileSaver(arguments.getDistancesFilePath(),
+                arguments.getTimeStep(), arguments.getAmountOfYears() * Constants.SATURNIAN_YEAR_SECONDS);
+        this.speedFileSaver = new SpeedFileSaver(arguments.getSpeedFilePath(),
+                arguments.getTimeStep(), arguments.getAmountOfYears() * Constants.SATURNIAN_YEAR_SECONDS);
     }
 
 
