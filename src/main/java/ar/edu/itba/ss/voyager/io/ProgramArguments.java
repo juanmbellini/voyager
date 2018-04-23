@@ -49,6 +49,11 @@ public class ProgramArguments {
     private final Vector2D saturnVelocity;
 
     /**
+     * Path for Ovito file.
+     */
+    private final String ovitoFilePath;
+
+    /**
      * Constructor.
      *
      * @param timeStep         The time step (i.e how much time elapses between two update events).
@@ -64,6 +69,7 @@ public class ProgramArguments {
      * @param saturnYPosition  The 'y' component of the initial position of Saturn.
      * @param saturnXVelocity  The 'x' component of the initial velocity of Saturn.
      * @param saturnYVelocity  The 'y' component of the initial velocity of Saturn.
+     * @param ovitoFilePath
      */
     public ProgramArguments(@Value("${custom.simulation.time-step}") final double timeStep,
                             // Sun
@@ -85,7 +91,9 @@ public class ProgramArguments {
                             @Value("${custom.system.saturn.position.x}") final double saturnXPosition,
                             @Value("${custom.system.saturn.position.y}") final double saturnYPosition,
                             @Value("${custom.system.saturn.velocity.x}") final double saturnXVelocity,
-                            @Value("${custom.system.saturn.velocity.y}") final double saturnYVelocity) {
+                            @Value("${custom.system.saturn.velocity.y}") final double saturnYVelocity,
+                            // File paths
+                            @Value("${custom.output.ovito}") String ovitoFilePath) {
         this.timeStep = timeStep;
         this.sunPosition = new Vector2D(sunXPosition, sunYPosition);
         this.sunVelocity = new Vector2D(sunXVelocity, sunYVelocity);
@@ -95,6 +103,7 @@ public class ProgramArguments {
         this.jupiterVelocity = new Vector2D(jupiterXVelocity, jupiterYVelocity);
         this.saturnPosition = new Vector2D(saturnXPosition, saturnYPosition);
         this.saturnVelocity = new Vector2D(saturnXVelocity, saturnYVelocity);
+        this.ovitoFilePath = ovitoFilePath;
     }
 
     /**
@@ -158,5 +167,12 @@ public class ProgramArguments {
      */
     public Vector2D getSaturnVelocity() {
         return saturnVelocity;
+    }
+
+    /**
+     * @return Path for Ovito file.
+     */
+    public String getOvitoFilePath() {
+        return ovitoFilePath;
     }
 }

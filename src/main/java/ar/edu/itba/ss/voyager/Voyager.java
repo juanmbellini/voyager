@@ -1,6 +1,8 @@
 package ar.edu.itba.ss.voyager;
 
+import ar.edu.itba.ss.g7.engine.io.DataSaver;
 import ar.edu.itba.ss.g7.engine.simulation.SimulationEngine;
+import ar.edu.itba.ss.voyager.io.OvitoFileSaverImpl;
 import ar.edu.itba.ss.voyager.io.ProgramArguments;
 import ar.edu.itba.ss.voyager.models.SolarSystem;
 import org.slf4j.Logger;
@@ -10,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.LinkedList;
 
 /**
  * Main class.
@@ -27,6 +31,8 @@ public class Voyager implements CommandLineRunner, InitializingBean {
      */
     private final SimulationEngine<SolarSystem.SolarSystemState, SolarSystem> engine;
 
+    private final DataSaver<SolarSystem.SolarSystemState> ovitoFileSaver;
+
     @Autowired
     public Voyager(ProgramArguments arguments) {
         final SolarSystem solarSystem = new SolarSystem(0,
@@ -35,6 +41,7 @@ public class Voyager implements CommandLineRunner, InitializingBean {
                 arguments.getJupiterPosition(), arguments.getJupiterVelocity(),
                 arguments.getSaturnPosition(), arguments.getSaturnVelocity());
         this.engine = new SimulationEngine<>(solarSystem);
+        this.ovitoFileSaver = new OvitoFileSaverImpl(arguments.getOvitoFilePath());
     }
 
 
@@ -68,7 +75,7 @@ public class Voyager implements CommandLineRunner, InitializingBean {
      */
     private void save() {
         LOGGER.info("Saving outputs...");
-        // TODO: save here
+        this.ovitoFileSaver.save(new LinkedList<>(this.engine.getResults()));
         LOGGER.info("Finished saving output in all formats.");
     }
 
