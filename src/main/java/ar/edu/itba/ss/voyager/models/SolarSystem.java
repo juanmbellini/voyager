@@ -176,7 +176,7 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
         this.saturnInitialPosition = saturnInitialPosition;
         this.saturnInitialVelocity = saturnInitialVelocity;
         this.shipInitialPosition = calculateShipInitialPosition(sunInitialPosition, earthInitialPosition);
-        this.shipInitialVelocity = calculateShipInitialVelocity(earthInitialPosition, earthInitialVelocity);
+        this.shipInitialVelocity = calculateShipInitialVelocity(earthInitialVelocity);
 
         // Calculate initial accelerations according to initial positions
         this.sunInitialAcceleration = getAcceleration(sunInitialPosition,
