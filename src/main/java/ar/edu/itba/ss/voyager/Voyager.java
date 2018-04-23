@@ -35,7 +35,7 @@ public class Voyager implements CommandLineRunner, InitializingBean {
 
     @Autowired
     public Voyager(ProgramArguments arguments) {
-        final SolarSystem solarSystem = new SolarSystem(arguments.getTimeStep(),
+        final SolarSystem solarSystem = new SolarSystem(arguments.getTimeStep(), arguments.getAmountOfYears(),
                 arguments.getSunPosition(), arguments.getSunVelocity(),
                 arguments.getEarthPosition(), arguments.getEarthVelocity(),
                 arguments.getJupiterPosition(), arguments.getJupiterVelocity(),
@@ -66,7 +66,7 @@ public class Voyager implements CommandLineRunner, InitializingBean {
      */
     private void simulate() {
         LOGGER.info("Starting simulation...");
-        this.engine.simulate(SolarSystem::reachedSaturnOrbit);
+        this.engine.simulate(SolarSystem::finishMovement);
         LOGGER.info("Finished simulation");
     }
 

@@ -86,6 +86,11 @@
       "description": "The time step (i.e how much time elapses in one simulation step)."
     },
     {
+      "name": "custom.simulation.years",
+      "type": "java.lang.Double",
+      "description": "Amount of Saturnian years (i.e amount of time the simulation will last)."
+    },
+    {
       "name": "custom.output.raw",
       "type": "java.lang.String",
       "description": "The path for the raw file."

@@ -30,6 +30,11 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      */
     private static final double SHIP_INITIAL_SPEED = 11000;
 
+    /**
+     * Amount of seconds it takes to Saturn to orbit the Sun.
+     */
+    private static final double SATURNIAN_YEAR_SECONDS = 929292480d;
+
     // ================================================================================================================
     // System stuff
     // ================================================================================================================
@@ -67,6 +72,11 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      * The time step (i.e how much time elapses between two update events).
      */
     private final double timeStep;
+
+    /**
+     * Amount of Saturnian years (i.e amount of time the simulation will last).
+     */
+    private final int saturnianYears;
 
     /**
      * The amount of time the system has existed.
@@ -152,6 +162,7 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      * Constructor.
      *
      * @param timeStep               The time step (i.e how much time elapses between two update events).
+     * @param saturnianYears         Amount of Saturnian years (i.e amount of time the simulation will last).
      * @param sunInitialPosition     The Sun's initial position.
      * @param sunInitialVelocity     The Sun's initial velocity.
      * @param earthInitialPosition   The Earth's initial position.
@@ -161,7 +172,7 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      * @param saturnInitialPosition  Saturn's initial position.
      * @param saturnInitialVelocity  Saturn's initial velocity.
      */
-    public SolarSystem(double timeStep,
+    public SolarSystem(double timeStep, int saturnianYears,
                        final Vector2D sunInitialPosition, final Vector2D sunInitialVelocity,
                        final Vector2D earthInitialPosition, final Vector2D earthInitialVelocity,
                        final Vector2D jupiterInitialPosition, final Vector2D jupiterInitialVelocity,
@@ -217,6 +228,8 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
 
         // Initialize integration mechanism stuff
         this.timeStep = timeStep;
+        this.saturnianYears = saturnianYears;
+        this.actualTime = 0;
         this.previousAccelerations = new HashMap<>();
         initializePreviousAccelerations();
     }
@@ -357,8 +370,8 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
      *
      * @return {@code true} if the ship already wen't through Saturn's orbit, or {@code false} otherwise.
      */
-    public boolean reachedSaturnOrbit() {
-        return actualTime >= 3.154e+7 * 3; // TODO: implement
+    public boolean finishMovement() {
+        return actualTime >= saturnianYears * SATURNIAN_YEAR_SECONDS;
     }
 
     @Override

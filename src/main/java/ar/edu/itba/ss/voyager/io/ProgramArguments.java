@@ -16,6 +16,11 @@ public class ProgramArguments {
     private final double timeStep;
 
     /**
+     * Amount of Saturnian years (i.e amount of time the simulation will last).
+     */
+    private final int amountOfYears;
+
+    /**
      * The initial position of the Sun.
      */
     private final Vector2D sunPosition;
@@ -57,6 +62,7 @@ public class ProgramArguments {
      * Constructor.
      *
      * @param timeStep         The time step (i.e how much time elapses between two update events).
+     * @param amountOfYears    Amount of Saturnian years (i.e amount of time the simulation will last).
      * @param earthXPosition   The 'x' component of the initial position of the Earth.
      * @param earthYPosition   The 'y' component of the initial position of the Earth.
      * @param earthXVelocity   The 'x' component of the initial velocity of the Earth.
@@ -73,6 +79,7 @@ public class ProgramArguments {
      */
     public ProgramArguments(@Value("${custom.simulation.time-step}") final double timeStep,
                             // Sun
+                            @Value("${custom.simulation.years}") int amountOfYears,
                             @Value("${custom.system.sun.position.x}") final double sunXPosition,
                             @Value("${custom.system.sun.position.y}") final double sunYPosition,
                             @Value("${custom.system.sun.velocity.x}") final double sunXVelocity,
@@ -95,6 +102,7 @@ public class ProgramArguments {
                             // File paths
                             @Value("${custom.output.ovito}") String ovitoFilePath) {
         this.timeStep = timeStep;
+        this.amountOfYears = amountOfYears;
         this.sunPosition = new Vector2D(sunXPosition, sunYPosition);
         this.sunVelocity = new Vector2D(sunXVelocity, sunYVelocity);
         this.earthPosition = new Vector2D(earthXPosition, earthYPosition);
@@ -111,6 +119,13 @@ public class ProgramArguments {
      */
     public double getTimeStep() {
         return timeStep;
+    }
+
+    /**
+     * @return Amount of Saturnian years (i.e amount of time the simulation will last).
+     */
+    public int getAmountOfYears() {
+        return amountOfYears;
     }
 
     /**
