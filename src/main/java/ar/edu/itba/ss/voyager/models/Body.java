@@ -78,7 +78,7 @@ public class Body implements StateHolder<Body.BodyState> {
     }
 
     /**
-     * @return The body's aceleration (represented as a 2D vector).
+     * @return The body's acceleration (represented as a 2D vector).
      */
     public Vector2D getAcceleration() {
         return acceleration;
@@ -111,23 +111,6 @@ public class Body implements StateHolder<Body.BodyState> {
         this.acceleration = acceleration;
     }
 
-    /**
-     * @return The body's kinetic energy.
-     */
-    public double getKineticEnergy() {
-        return 0.5 * mass * velocity.getNormSq();
-    }
-
-    /**
-     * Calculates the potential energy of a two {@link Body}'s system.
-     *
-     * @param other The other body.
-     * @return The potential energy of the system.
-     */
-    public double getPotentialEnergy(final Body other) {
-        return -Constants.G * mass * other.getMass() / position.subtract(other.getPosition()).getNorm();
-    }
-
     @Override
     public BodyState outputState() {
         return new BodyState(this);
@@ -137,11 +120,6 @@ public class Body implements StateHolder<Body.BodyState> {
      * Represents the state of a given body.
      */
     public static final class BodyState implements State {
-
-        /**
-         * The {@link Body}'s mass.
-         */
-        private final double mass;
 
         /**
          * The {@link Body}'s position (represented as a 2D vector).
@@ -154,27 +132,13 @@ public class Body implements StateHolder<Body.BodyState> {
         private final Vector2D velocity;
 
         /**
-         * The {@link Body}'s acceleration (represented as a 2D vector).
-         */
-        private final Vector2D acceleration;
-
-        /**
          * Constructor.
          *
          * @param body The {@link Body}'s whose state will be represented.
          */
         /* package */ BodyState(final Body body) {
-            mass = body.getMass();
             position = body.getPosition(); // The Vector2D class is unmodifiable.
             velocity = body.getVelocity(); // The Vector2D class is unmodifiable.
-            acceleration = body.getAcceleration(); // The Vector2D class is unmodifiable.
-        }
-
-        /**
-         * The {@link Body}'s mass.
-         */
-        public double getMass() {
-            return mass;
         }
 
         /**
@@ -189,13 +153,6 @@ public class Body implements StateHolder<Body.BodyState> {
          */
         public Vector2D getVelocity() {
             return velocity;
-        }
-
-        /**
-         * The {@link Body}'s velocity (represented as a 2D vector).
-         */
-        public Vector2D getAcceleration() {
-            return acceleration;
         }
     }
 }
