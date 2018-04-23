@@ -2,8 +2,7 @@ package ar.edu.itba.ss.voyager;
 
 import ar.edu.itba.ss.g7.engine.io.DataSaver;
 import ar.edu.itba.ss.g7.engine.simulation.SimulationEngine;
-import ar.edu.itba.ss.voyager.io.OvitoFileSaverImpl;
-import ar.edu.itba.ss.voyager.io.ProgramArguments;
+import ar.edu.itba.ss.voyager.io.*;
 import ar.edu.itba.ss.voyager.models.SolarSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,25 @@ public class Voyager implements CommandLineRunner, InitializingBean {
      */
     private final SimulationEngine<SolarSystem.SolarSystemState, SolarSystem> engine;
 
+    /**
+     * {@link DataSaver} for Ovito file.
+     */
     private final DataSaver<SolarSystem.SolarSystemState> ovitoFileSaver;
+
+    /**
+     * {@link DataSaver} for trajectory file.
+     */
+    private final DataSaver<SolarSystem.SolarSystemState> trajectoryFileSaver;
+
+    /**
+     * {@link DataSaver} for distances file.
+     */
+    private final DataSaver<SolarSystem.SolarSystemState> distancesFileSaver;
+
+    /**
+     * {@link DataSaver} for speed file.
+     */
+    private final DataSaver<SolarSystem.SolarSystemState> speedFileSaver;
 
     @Autowired
     public Voyager(ProgramArguments arguments) {
@@ -42,6 +59,9 @@ public class Voyager implements CommandLineRunner, InitializingBean {
                 arguments.getSaturnPosition(), arguments.getSaturnVelocity());
         this.engine = new SimulationEngine<>(solarSystem);
         this.ovitoFileSaver = new OvitoFileSaverImpl(arguments.getOvitoFilePath());
+        this.trajectoryFileSaver = new TrajectoryFileSaver(arguments.getTrajectoryFilePath());
+        this.distancesFileSaver = new DistancesFileSaver(arguments.getDistancesFilePath());
+        this.speedFileSaver = new SpeedFileSaver(arguments.getSpeedFilePath());
     }
 
 
@@ -76,6 +96,9 @@ public class Voyager implements CommandLineRunner, InitializingBean {
     private void save() {
         LOGGER.info("Saving outputs...");
         this.ovitoFileSaver.save(new LinkedList<>(this.engine.getResults()));
+        this.trajectoryFileSaver.save(new LinkedList<>(this.engine.getResults()));
+        this.distancesFileSaver.save(new LinkedList<>(this.engine.getResults()));
+        this.speedFileSaver.save(new LinkedList<>(this.engine.getResults()));
         LOGGER.info("Finished saving output in all formats.");
     }
 

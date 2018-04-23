@@ -101,9 +101,19 @@
       "description": "The path for the Ovito file."
     },
     {
-      "name": "custom.output.movement",
+      "name": "custom.output.trajectory",
       "type": "java.lang.String",
-      "description": "The path for the Movement file."
+      "description": "The path for the trajectory file."
+    },
+    {
+      "name": "custom.output.distances",
+      "type": "java.lang.String",
+      "description": "The path for the distances file."
+    },
+    {
+      "name": "custom.output.speed",
+      "type": "java.lang.String",
+      "description": "The path for the speed file."
     }
   ]
 }

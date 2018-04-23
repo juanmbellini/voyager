@@ -59,23 +59,45 @@ public class ProgramArguments {
     private final String ovitoFilePath;
 
     /**
+     * Path for trajectory file.
+     */
+    private final String trajectoryFilePath;
+
+    /**
+     * Path for distances file.
+     */
+    private final String distancesFilePath;
+
+    /**
+     * Path for speed file.
+     */
+    private final String speedFilePath;
+
+    /**
      * Constructor.
      *
-     * @param timeStep         The time step (i.e how much time elapses between two update events).
-     * @param amountOfYears    Amount of Saturnian years (i.e amount of time the simulation will last).
-     * @param earthXPosition   The 'x' component of the initial position of the Earth.
-     * @param earthYPosition   The 'y' component of the initial position of the Earth.
-     * @param earthXVelocity   The 'x' component of the initial velocity of the Earth.
-     * @param earthYVelocity   The 'y' component of the initial velocity of the Earth.
-     * @param jupiterXPosition The 'x' component of the initial position of Jupiter.
-     * @param jupiterYPosition The 'y' component of the initial position of Jupiter.
-     * @param jupiterXVelocity The 'x' component of the initial velocity of Jupiter.
-     * @param jupiterYVelocity The 'y' component of the initial velocity of Jupiter.
-     * @param saturnXPosition  The 'x' component of the initial position of Saturn.
-     * @param saturnYPosition  The 'y' component of the initial position of Saturn.
-     * @param saturnXVelocity  The 'x' component of the initial velocity of Saturn.
-     * @param saturnYVelocity  The 'y' component of the initial velocity of Saturn.
-     * @param ovitoFilePath
+     * @param timeStep           The time step (i.e how much time elapses between two update events).
+     * @param amountOfYears      Amount of Saturnian years (i.e amount of time the simulation will last).
+     * @param sunXPosition       The 'x' component of the initial position of the Sun.
+     * @param sunYPosition       The 'y' component of the initial position of the Sun.
+     * @param sunXVelocity       The 'x' component of the initial velocity of the Sun.
+     * @param sunYVelocity       The 'y' component of the initial velocity of the Sun.
+     * @param earthXPosition     The 'x' component of the initial position of the Earth.
+     * @param earthYPosition     The 'y' component of the initial position of the Earth.
+     * @param earthXVelocity     The 'x' component of the initial velocity of the Earth.
+     * @param earthYVelocity     The 'y' component of the initial velocity of the Earth.
+     * @param jupiterXPosition   The 'x' component of the initial position of Jupiter.
+     * @param jupiterYPosition   The 'y' component of the initial position of Jupiter.
+     * @param jupiterXVelocity   The 'x' component of the initial velocity of Jupiter.
+     * @param jupiterYVelocity   The 'y' component of the initial velocity of Jupiter.
+     * @param saturnXPosition    The 'x' component of the initial position of Saturn.
+     * @param saturnYPosition    The 'y' component of the initial position of Saturn.
+     * @param saturnXVelocity    The 'x' component of the initial velocity of Saturn.
+     * @param saturnYVelocity    The 'y' component of the initial velocity of Saturn.
+     * @param ovitoFilePath      Path for Ovito file.
+     * @param trajectoryFilePath Path for trajectory file.
+     * @param distancesFilePath  Path for distances file.
+     * @param speedFilePath      Path for speed file.
      */
     public ProgramArguments(@Value("${custom.simulation.time-step}") final double timeStep,
                             // Sun
@@ -100,7 +122,10 @@ public class ProgramArguments {
                             @Value("${custom.system.saturn.velocity.x}") final double saturnXVelocity,
                             @Value("${custom.system.saturn.velocity.y}") final double saturnYVelocity,
                             // File paths
-                            @Value("${custom.output.ovito}") String ovitoFilePath) {
+                            @Value("${custom.output.ovito}") String ovitoFilePath,
+                            @Value("${custom.output.trajectory}") String trajectoryFilePath,
+                            @Value("${custom.output.distances}") String distancesFilePath,
+                            @Value("${custom.output.speed}") String speedFilePath) {
         this.timeStep = timeStep;
         this.amountOfYears = amountOfYears;
         this.sunPosition = new Vector2D(sunXPosition, sunYPosition);
@@ -112,6 +137,9 @@ public class ProgramArguments {
         this.saturnPosition = new Vector2D(saturnXPosition, saturnYPosition);
         this.saturnVelocity = new Vector2D(saturnXVelocity, saturnYVelocity);
         this.ovitoFilePath = ovitoFilePath;
+        this.trajectoryFilePath = trajectoryFilePath;
+        this.distancesFilePath = distancesFilePath;
+        this.speedFilePath = speedFilePath;
     }
 
     /**
@@ -189,5 +217,26 @@ public class ProgramArguments {
      */
     public String getOvitoFilePath() {
         return ovitoFilePath;
+    }
+
+    /**
+     * @return Path for trajectory file.
+     */
+    public String getTrajectoryFilePath() {
+        return trajectoryFilePath;
+    }
+
+    /**
+     * @return Path for distances file.
+     */
+    public String getDistancesFilePath() {
+        return distancesFilePath;
+    }
+
+    /**
+     * @return Path for speed file.
+     */
+    public String getSpeedFilePath() {
+        return speedFilePath;
     }
 }
