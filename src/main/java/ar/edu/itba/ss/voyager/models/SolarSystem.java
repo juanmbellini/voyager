@@ -28,7 +28,7 @@ public class SolarSystem implements System<SolarSystem.SolarSystemState> {
     /**
      * The ship's initial speed (velocity module) in meters over seconds
      */
-    private static final double SHIP_INITIAL_SPEED = 11000;
+    private static final double SHIP_INITIAL_SPEED = 14000;
 
     // ================================================================================================================
     // System stuff
