@@ -62,11 +62,11 @@ public class OvitoFileSaverImpl extends OvitoFileSaver<SolarSystem.SolarSystemSt
                 .append(" ")
                 .append(body.getVelocity().getY())
                 .append(" ")
-                .append(r)
+                .append((double) r / 255d)
                 .append(" ")
-                .append(g)
+                .append((double) g / 255d)
                 .append(" ")
-                .append(b)
+                .append((double) b / 255d)
                 .append("\n");
     }
 }
