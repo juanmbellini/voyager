@@ -1,14 +1,94 @@
 {
   "properties": [
     {
+      "name": "custom.system.sun.position.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial position of the Sun."
+    },
+    {
+      "name": "custom.system.sun.position.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial position of the Sun."
+    },
+    {
+      "name": "custom.system.sun.velocity.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial velocity of the Sun."
+    },
+    {
+      "name": "custom.system.sun.velocity.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial velocity of the Sun."
+    },
+    {
+      "name": "custom.system.earth.position.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial position of the Earth."
+    },
+    {
+      "name": "custom.system.earth.position.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial position of the Earth."
+    },
+    {
+      "name": "custom.system.earth.velocity.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial velocity of the Earth."
+    },
+    {
+      "name": "custom.system.earth.velocity.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial velocity of the Earth."
+    },
+    {
+      "name": "custom.system.jupiter.position.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial position of Jupiter."
+    },
+    {
+      "name": "custom.system.jupiter.position.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial position of Jupiter."
+    },
+    {
+      "name": "custom.system.jupiter.velocity.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial velocity of Jupiter."
+    },
+    {
+      "name": "custom.system.jupiter.velocity.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial velocity of Jupiter."
+    },
+    {
+      "name": "custom.system.saturn.position.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial position of Saturn."
+    },
+    {
+      "name": "custom.system.saturn.position.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial position of Saturn."
+    },
+    {
+      "name": "custom.system.saturn.velocity.x",
+      "type": "java.lang.Double",
+      "description": "The 'x' component of the initial velocity of Saturn."
+    },
+    {
+      "name": "custom.system.saturn.velocity.y",
+      "type": "java.lang.Double",
+      "description": "The 'y' component of the initial velocity of Saturn."
+    },
+    {
       "name": "custom.simulation.time-step",
       "type": "java.lang.Double",
       "description": "The time step (i.e how much time elapses in one simulation step)."
     },
     {
-      "name": "custom.simulation.duration",
+      "name": "custom.simulation.years",
       "type": "java.lang.Double",
-      "description": "The duration of the simulation (in seconds)."
+      "description": "Amount of Saturnian years (i.e amount of time the simulation will last)."
     },
     {
       "name": "custom.output.raw",
@@ -21,9 +101,19 @@
       "description": "The path for the Ovito file."
     },
     {
-      "name": "custom.output.movement",
+      "name": "custom.output.trajectory",
       "type": "java.lang.String",
-      "description": "The path for the Movement file."
+      "description": "The path for the trajectory file."
+    },
+    {
+      "name": "custom.output.distances",
+      "type": "java.lang.String",
+      "description": "The path for the distances file."
+    },
+    {
+      "name": "custom.output.speed",
+      "type": "java.lang.String",
+      "description": "The path for the speed file."
     }
   ]
 }
